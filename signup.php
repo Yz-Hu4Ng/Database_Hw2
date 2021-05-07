@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-     
+
 	<title>SIGN UP</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
      <meta charset="utf-8">
@@ -26,15 +26,15 @@
 
      <form action="signup-check.php" method="post">
      	<h2>SIGN UP</h2>
-          <?php 
+          <?php
                $er1="";
                $er2="";
                $er3="";
                $er4="";
-               ?>
-          
+          ?>
 
-     	<?php if (isset($_GET['error'])) { 
+
+     	<?php if (isset($_GET['error'])) {
 
                switch($_GET['error']){
                     case"noun":
@@ -64,51 +64,51 @@
 
 
      	 } ?>
-          
+
           <?php if (isset($_GET['error'])) { ?>
-     		<p class="error">Sign up Failed</p>
-     	<?php } ?>
+     		       <p class="error">Sign up Failed</p>
+     	    <?php } ?>
           <?php if (isset($_GET['success'])) { ?>
                <p class="success"><?php echo $_GET['success']; ?></p>
           <?php } ?>
-       
+
 
           <label>User Name</label>
           <?php if (isset($_GET['uname'])) { ?>
-               <input type="text" 
-                      name="uname" 
+               <input type="text"
+                      name="uname"
                       placeholder="User Name"
                       value="<?php echo $_GET['uname']; ?>"><br>
           <?php }else{ ?>
-               <input type="text" 
-                      name="uname" 
+               <input type="text"
+                      name="uname"
                       placeholder="User Name"><br>
           <?php }?>
-          
+
           <p style="color:#DC143C;"><?php echo $er1?></p>
 
           <label>PhoneNumber</label>
-     	<input type="text" 
-                 name="phone" 
+     	<input type="text"
+                 name="phone"
                  placeholder="Phone Number"><br>
-          
+
           <p style="color:#DC143C;"><?php echo $er2?></p>
-          
-     
+
+
 
      	<label>Password</label>
-     	<input type="text" 
-                 name="password" 
+     	<input type="text"
+                 name="password"
                  placeholder="Password"><br>
           <p style="color:#DC143C;"><?php echo $er3?></p>
 
           <label>Confirm Password</label>
-          <input type="text" 
-                 name="re_password" 
+          <input type="text"
+                 name="re_password"
                  placeholder="Password"><br>
-          <p style="color:#DC143C;"><?php echo $er4?></p>
+          <p style="color:#DCFF3C;"><?php echo $er4?></p>
 
-       
+
           <button type="submit">Sign Up</button>
      </form>
 </body>

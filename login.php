@@ -24,7 +24,6 @@ if (isset($_POST['uname']) && isset($_POST['password'])) {
 	
 
 		$sql = "select * from User where user_name='$uname'";
-
 		$result = mysqli_query($conn, $sql);
 
 		if (mysqli_num_rows($result) === 1) {
@@ -33,8 +32,14 @@ if (isset($_POST['uname']) && isset($_POST['password'])) {
 			$pass=hash('sha256',$pass.strval($row['salt']));
             if ($row['user_name'] === $uname && $row['password'] === $pass) {
             	$_SESSION['user_name'] = $row['user_name'];
-            	$_SESSION['user_id'] = $row['user_id'];
+            	$userid = $_SESSION['user_id'] = $row['user_id'];
 				$_SESSION['phone']=$row['phone'];
+				$sql = "select * from Manager where user_id ='$userid'";
+				$result = mysqli_query($conn, $sql);
+				if(mysqli_num_rows($result) > 0) {
+					$_SESSION['is_owner'] = true;
+				}
+				
 				echo "success";
             	header("Location: home.php");
 		        exit();
