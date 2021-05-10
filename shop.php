@@ -108,8 +108,10 @@ if (isset($_SESSION['is_owner'])) {
           <button type="submit">edit</button>
   </form>
 </body>
+<h2> Employee</h2>
 
 <body>
+<?php //this is where to add the employee?>
   
   <?php 
     // error issue
@@ -120,7 +122,7 @@ if (isset($_SESSION['is_owner'])) {
   ?>
 
   <form action="employeeadd.php" method="post">
-  <label>Employee</label>
+  <label>Add Employee</label>
           <input type="text"
                  name="addemployee"
                  placeholder="Type account"
@@ -130,9 +132,36 @@ if (isset($_SESSION['is_owner'])) {
 
   </form>
 </body>
+
+<p> account   phone </p>
 <body>
-<?php //todo?>
-<p>show the employees and allow delete</p>
+    
+  <?php 
+    $shoppid=$_SESSION['shop_id'];
+    $sql="SELECT * FROM Clerk natural join User WHERE shop_id='$shoppid'";
+    $result=$conn->query($sql);
+    if ($result->num_rows > 0) {
+      // output data of each row
+      while($row = $result->fetch_assoc()) {
+        echo "name: " . $row["user_name"]. "Phone:" . $row["phone"];
+        $_SESSION['clerk_id']=$row["clerk_id"];
+        
+        
+        ?>
+        
+        <form type="text/css" action="deleteclerk.php" method="post">
+        <button  type="submit">delete</button>
+        </form>
+
+
+        <br>
+        <?php
+      }
+    } else {
+      echo "there is no employee";
+    }
+
+  ?>
 
 </body>
 <?php
