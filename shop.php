@@ -133,55 +133,58 @@ if (isset($_SESSION['is_owner'])) {
   </form>
 </body>
 
-<p> account   phone </p>
+
 <body>
+<form type="text/css" action="deleteclerk.php" method="post">
     
   <?php 
     $shoppid=$_SESSION['shop_id'];
     $sql="SELECT * FROM Clerk natural join User WHERE shop_id='$shoppid'";
     $result=$conn->query($sql);
+    ?>
+
+
+
+    <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Account</th>
+        <th scope="col">Phone</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+
+<?php
     if ($result->num_rows > 0) {
       // output data of each row
       while($row = $result->fetch_assoc()) {
-        echo "name: " . $row["user_name"]. "Phone:" . $row["phone"];
+        //echo "name: " . $row["user_name"]. "Phone:" . $row["phone"];?>
+        <tbody>
+          <tr>
+            <th scope="row"><?php echo $row["user_name"]?></th>
+            <td><?php echo $row["phone"]?></td>
+            <td><button  type="submit">delete</button></td>
+          </tr>
+        </tbody>
+        <?php
         $_SESSION['clerk_id']=$row["clerk_id"];
         
         
         ?>
-        
-        <form type="text/css" action="deleteclerk.php" method="post">
-        <button  type="submit">delete</button>
-        </form>
-
 
         <br>
-        <?php
+      <?php
       }
     } else {
       echo "there is no employee";
     }
+    
 
   ?>
-
+  </table>
+</form>
 </body>
-<?php
-//Todo: list all clerks
-          //      add clerks
-          //      delete clerks
-          // $userid = $_SESSION['user_id'];
-          // $to_find_clerk_userid =   "select * from Manager inner join 
-          //                           Clerk on Manager.shop_id == Clerk.shop_id 
-          //                           where Manager.user_id == '$ userid'";
 
-          // $result = $mysqli->query($to_find_clerk_userid);
-
-          // $rows = $result->fetch_all(MYSQLI_ASSOC);
-          /*
-          foreach ($rows as $row) {
-          printf("%s (%s)\n", $row["Clerk.user_id"], $row[""]);
-          }
-          */
-          ?>
       
 </html>
 <?php
