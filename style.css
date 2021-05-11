@@ -27,7 +27,7 @@ h2 {
 
 input {
 	display: block;
-	border: 2px solid #ccc;
+	border: 2px solid rgb(11, 228, 40);
 	width: 95%;
 	padding: 10px;
 	margin: 10px auto;
@@ -40,7 +40,7 @@ label {
 }
 
 
-/* button {
+ button {
 	height: 20px;
 	width:auto;
 	background: #555;
@@ -49,7 +49,7 @@ label {
 }
 button:hover{
 	opacity: .7;
-} */
+} 
 .error {
    background: #F2DEDE;
    color: #A94442;
@@ -60,7 +60,7 @@ button:hover{
 }
 
 .success {
-   background: #D4EDDA;
+   background: #014110;
    color: #40754C;
    padding: 10px;
    width: 95%;
@@ -70,7 +70,7 @@ button:hover{
 
 h1 {
 	text-align: center;
-	color: #fff;
+	color: rgb(128, 18, 18);
 }
 
 .ca {

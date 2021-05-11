@@ -1,5 +1,7 @@
 <?php
 session_start();
+
+include "db_conn.php";
 ?>
 
 <?php
@@ -9,7 +11,6 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['user_name'])) {
 }
 ?>
 
-  
 <?php
 //if this is a shop owner
 if (isset($_SESSION['is_owner'])) {
@@ -25,7 +26,7 @@ if (isset($_SESSION['is_owner'])) {
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
 <head>
-  <label>Shop page when you are an owner</label>
+  <label>You are the owner of a shop!!</label>
   <title>HOME</title>
   <link rel="stylesheet" type="text/css" href="style.css">
   <meta charset="utf-8">
@@ -46,37 +47,150 @@ if (isset($_SESSION['is_owner'])) {
   </div>
 </nav>
 </header>
+<h1 style="text-align:left">Myshop</h1>
+<body>
+      <?php
+          $sql = "select * from User natural join Manager natural join Shop where user_name='$_SESSION[user_name]'";
+          $result = $conn->query($sql);
+          if($result->num_rows>0){
+            $row = $result->fetch_assoc();
+            $shopnametoshow=$row["shop_name"];
+            
+            $shopcitytoshow=$row["city"];
+            $shopmask=$row["mask_count"];
+            
+            $maskprice=$row["mask_price"];
+
+            $_SESSION['shop_id'] = $row['shop_id'];
+            
+          }                
+      ?>
+      <p><b>Shop:</b> <?php echo $shopnametoshow; ?></p>
+      <p><b>City:</b> <?php echo $shopcitytoshow; ?></p>
+</body>
+
+<?php // this is where to change the mask price?>
+<body>
+  <?php 
+      $error1="";
+      if (isset($_GET['error'])&&$_GET['error']==="price must be greater than 0") {
+          $error1="price must be greater than 0";
+        }
+  ?>
+
+  <form action="maskpriceedit.php" method="post">
+  <label>Mask Price</label>
+          <input type="text"
+                 name="mskpriceedit"
+                 placeholder=<?php echo $maskprice; ?>
+           style="color:#DCFF3C;"><?php echo $error1?></p>
+
+
+          <button type="submit">edit</button>
+  </form>
+</body>
+
+<?php // this is where to change the mask amount?>
+<body>
+  <?php 
+      $error2="";
+      if (isset($_GET['error'])&&$_GET['error']==="amount must be greater than 0") {
+          $error2="amount must be greater than 0";
+        }
+  ?>
+  <form action="maskamountedit.php" method="post">
+  <label>Mask Amount</label>
+          <input type="text"
+                 name="mskamountedit"
+                 placeholder=<?php echo $shopmask; ?>
+           style="color:#DCFF3C;"><?php echo $error2?></p>
+
+          <button type="submit">edit</button>
+  </form>
+</body>
+<h2> Employee</h2>
 
 <body>
+<?php //this is where to add the employee?>
+  
+  <?php 
+    // error issue
+    $error3="";
+    if (isset($_GET['error'])&&$_GET['error']!=="price must be greater than 0"&&$_GET['error']!=="amount must be greater than 0") {
+      $error3=$_GET['error'];
+    }
+  ?>
 
-      <h1 style="text-align:left">Profile</h1>
-      <p><b>Account:</b> <?php echo $_SESSION['user_name']; ?></p>
-      <p><b>Phone:</b> <?php echo $_SESSION['phone']; ?></p>
-      <?php
-      //Todo: list all clerks
-      //      add clerks
-      //      delete clerks
-          $userid = $_SESSION['user_id'];
-          $to_find_clerk_userid =   "select * from Manager inner join 
-                                    Clerk on Manager.shop_id == Clerk.shop_id 
-                                    where Manager.user_id == '$ userid'";
+  <form action="employeeadd.php" method="post">
+  <label>Add Employee</label>
+          <input type="text"
+                 name="addemployee"
+                 placeholder="Type account"
+           style="color:#DCFF3C;"><?php echo $error3?></p>
 
-          $result = $mysqli->query($to_find_clerk_userid);
+          <button type="submit">Add</button>
 
-          $rows = $result->fetch_all(MYSQLI_ASSOC);
-          /*
-          foreach ($rows as $row) {
-          printf("%s (%s)\n", $row["Clerk.user_id"], $row[""]);
-          }
-          */
-      }
-      ?>
-      
+  </form>
 </body>
+
+
+<body>
+<form type="text/css" action="deleteclerk.php" method="post">
+    
+  <?php 
+    $shoppid=$_SESSION['shop_id'];
+    $sql="SELECT * FROM Clerk natural join User WHERE shop_id='$shoppid'";
+    $result=$conn->query($sql);
+    ?>
+
+
+
+    <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Account</th>
+        <th scope="col">Phone</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+
+<?php
+    if ($result->num_rows > 0) {
+      // output data of each row
+      while($row = $result->fetch_assoc()) {
+        //echo "name: " . $row["user_name"]. "Phone:" . $row["phone"];?>
+        <tbody>
+          <tr>
+            <th scope="row"><?php echo $row["user_name"]?></th>
+            <td><?php echo $row["phone"]?></td>
+            <td><button  type="submit">delete</button></td>
+          </tr>
+        </tbody>
+        <?php
+        $_SESSION['clerk_id']=$row["clerk_id"];
+        
+        
+        ?>
+
+        <br>
+      <?php
+      }
+    } else {
+      echo "there is no employee";
+    }
+    
+
+  ?>
+  </table>
+</form>
+</body>
+
+      
 </html>
 <?php
 }
 ?>
+
 
 
 <?php
@@ -149,4 +263,3 @@ if (!isset($_SESSION['is_owner'])) {
 <?php
 }
 ?>
-

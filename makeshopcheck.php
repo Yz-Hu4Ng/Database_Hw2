@@ -41,7 +41,6 @@ if(isset($_POST['shopname']) && isset($_POST['maskamount']) && isset($_POST['mas
 		//exit();
 	}
 
-	//echo "<script>alert('指令碼學堂,www.jbxue.com')</script>"; 
 
 	$sql = "select shop_name from Shop where shop_name='$shopname'";
 	$result = mysqli_query($conn, $sql);
