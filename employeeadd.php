@@ -13,6 +13,11 @@ if (isset($_POST['addemployee'])) {
 
 	$addemployee = validate($_POST['addemployee']);
     $shoppid=$_SESSION['shop_id'];
+    if($addemployee===$_SESSION['user_name']){
+        header("Location: shop.php?error=you cannot add yourself !");
+		//error=no such person
+	    exit();
+    }
 
 	$sql = "SELECT * FROM User WHERE user_name='$addemployee'";
     $result=$conn->query($sql);

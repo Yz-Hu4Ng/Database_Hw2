@@ -33,16 +33,37 @@ if(isset($_SESSION['user_id'])
     /*
     $sql = "search Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price from Shop natural join Manager natural join Clerk where Shop.shop_name like %$searchshopname% and city = '$searchcity' ";
     */
-    $sql = "select Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price from Shop natural join Manager inner join Clerk on Manager.shop_id = Clerk.shop_id ";
-    
-    if($searchamount == "l") $sql .= "and mask_count >= 100 ";
-    if($searchamount == "m") $sql .= "and mask_count < 100 and mask_count > 50 ";
-    if($searchamount == "s") $sql .= "and mask_count <= 50 ";
-    
-    if(!empty($searchpricea)) $sql .= "and mask_price > $searchpricea ";
-    if(!empty($searchpriceb)) $sql .= "and mask_price < $searchpriceb ";
+    $sql = "select Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price 
+            from Shop natural join Manager
+            where Shop.shop_name like '%$searchshopname%' and city = '$searchcity' ";
+    $sql2 = "select Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price 
+            from Shop natural join Clerk
+            where Shop.shop_name like '%$searchshopname%' and city = '$searchcity' ";
 
-    //if(isset($_POST['search_shop_i_work'])) $sql .= "and Manager.user_id = '$userid' or Clerk.user_id = '$userid' ";
+
+    if($searchamount == "l") {$sql .= "and mask_count >= 100 ";$sql2 .= "and mask_count >= 100 ";}
+    if($searchamount == "m") {$sql .= "and mask_count < 100 and mask_count > 50 ";$sql .= "and mask_count < 100 and mask_count > 50 ";}
+    if($searchamount == "s") {$sql .= "and mask_count <= 50 ";$sql2 .= "and mask_count <= 50 ";}
+    
+    if(empty($searchpricea)){
+       $sql .= "and mask_price >= 0 ";
+       $sql2 .= "and mask_price >= 0 ";
+    }
+    else {
+      $sql .= "and mask_price >= $searchpricea ";
+      $sql2 .= "and mask_price >= $searchpricea ";
+    }
+
+    if(empty($searchpriceb)) {
+      $sql .= "and mask_price < 99999999999999 ";
+      $sql2 .= "and mask_price < 99999999999999 ";
+    }
+    else{
+      $sql .= "and mask_price < $searchpriceb ";
+      $sql2 .= "and mask_price < $searchpriceb ";
+    }
+
+    if(isset($_POST['search_shop_i_work'])) {$sql .= "and Manager.user_id = '$userid' "; $sql2 .= "and Clerk.user_id = '$userid' ";}
     
     
 
@@ -80,20 +101,47 @@ if(isset($_SESSION['user_id'])
   <p><b>Phone:</b> <?php echo $_SESSION['phone']; ?></p>
   <div class="container-fluid">
   <?php
+  //echo $sql;
   $result = mysqli_query($conn , $sql);
-  if(!$result)echo "fuckyou";
-  if ($result){
-    
-      while ($row=mysqli_fetch_row($result))
-      {
-          echo "<div text-size=25px>shopname : $row[0] , city : $row[1] , mask amount : $row[2] , mask price : $row[3]</div>";
-          echo "<br>";
+  $result2 = mysqli_query($conn , $sql2);
+  
+  if ($result->num_rows === 0 && $result2->num_rows === 0){
+      echo "<a>Sorry , result not found.</a>";
+      echo "<br>";
+    //echo "<a herf='home.php'>Press me</a>";
+  }
+  else { ?>
+    <table>
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Shop name</th>
+          <th scope="col">City</th>
+          <th scope="col">Mask amount</th>
+          <th scope="col">Mask price</th>
+        </tr>
+      </thead>
+  <?php
+      while ($row= $result->fetch_row()){
+          //echo "I'm inside while loop";
+          echo "<div id='contentItem'>";
+          echo "Shop name : $row[0] , city : $row[1] , mask amount = $row[2] , mask_price = $row[3]";
+          echo "</div>";
       }
-      
+      if(isset($_SESSION['search_shop_i_work'])){
+      while ($row= $result2->fetch_row()){
+
+            //echo "I'm inside while loop";
+            echo "<div id='contentItem'>";
+            echo "Shop name : $row[0] , city : $row[1] , mask amount = $row[2] , mask_price = $row[3]";
+            echo "</div>";
+        }
+      }
+      mysqli_free_result($result2);
       mysqli_free_result($result);
   }
-
+  
   ?>
+</table>
   </div>
     
 <style>
