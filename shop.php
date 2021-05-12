@@ -13,7 +13,7 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['user_name'])) {
 
 <?php
 //if this is a shop owner
-if (isset($_SESSION['is_owner'])) {
+if (isset($_SESSION['is_owner']) && $_SESSION['is_owner'] == true) {
 ?>
 
 <!DOCTYPE html>
@@ -195,7 +195,7 @@ if (isset($_SESSION['is_owner'])) {
 
 <?php
 //if this is not a shop owner
-if (!isset($_SESSION['is_owner'])) {
+if (!isset($_SESSION['is_owner']) || $_SESSION['is_owner'] == false) {
 ?>
 
 <!DOCTYPE html>
