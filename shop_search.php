@@ -30,6 +30,9 @@ if(isset($_SESSION['user_id'])
     $searchpriceb = validate($_POST['searchpriceb']);//price upper bound b
     $searchamount = validate($_POST['searchamount']);//user's input to search for masks amount
 
+    $_searchshopname = mysql_real_escape_string($conn , $searchshopname);
+
+
 
     //$search_shop_i_work = validate($_POST['search_shop_i_work']);//only showing shop that user works at or showing all 
     /*
@@ -37,10 +40,10 @@ if(isset($_SESSION['user_id'])
     */
     $sql = "select Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price 
             from Shop natural join Manager
-            where Shop.shop_name like '%$searchshopname%' and city = '$searchcity' ";
+            where Shop.shop_name like '%$_searchshopname%' and city = '$searchcity' ";
     $sql2 = "select Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price 
             from Shop natural join Clerk
-            where Shop.shop_name like '%$searchshopname%' and city = '$searchcity' ";
+            where Shop.shop_name like '%$_searchshopname%' and city = '$searchcity' ";
 
     // 
     if($searchamount == "l") {$sql .= "and mask_count >= 100 ";$sql2 .= "and mask_count >= 100 ";}

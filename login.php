@@ -14,13 +14,12 @@ if (isset($_POST['uname']) && isset($_POST['password'])) {
 	$uname = validate($_POST['uname']);
 	$pass = validate($_POST['password']);
 
-	$_uname = mysql_real_escape_string($uname);
-	$_pass = mysql_real_escape_string($pass);
+	$_uname = mysqli_real_escape_string($conn , $uname);
 
-	if (empty($_uname)) {
+	if (empty($uname)) {
 		header("Location: index.php?error=User Name is required");
 	    exit();
-	}else if(empty($_pass)){
+	}else if(empty($pass)){
         header("Location: index.php?error=Password is required");
 	    exit();
 	}else{
@@ -33,7 +32,7 @@ if (isset($_POST['uname']) && isset($_POST['password'])) {
 			$row = mysqli_fetch_assoc($result);
 
 			$pass=hash('sha256',$pass.strval($row['salt']));
-            if ($row['user_name'] === $_uname && $row['password'] === $_pass) {
+            if ($row['user_name'] === $uname && $row['password'] === $pass) {
             	$_SESSION['user_name'] = $row['user_name'];
             	$userid = $_SESSION['user_id'] = $row['user_id'];
 				$_SESSION['phone']=$row['phone'];

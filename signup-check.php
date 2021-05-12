@@ -17,7 +17,10 @@ if (isset($_POST['uname']) && isset($_POST['password'])
 	$re_pass = validate($_POST['re_password']);
 	$phone = validate($_POST['phone']);
 
-	if (empty($uname)) {
+	$_uname = mysqli_real_escape_string($conn , $uname);
+	$_phone = mysqli_real_escape_string($conn , $phone);
+
+	if (empty($_uname)) {
 		header("Location: signup.php?error=noun");
 		//error=User Name is required
 	    exit();
@@ -38,7 +41,7 @@ if (isset($_POST['uname']) && isset($_POST['password'])
 	    exit();
 	}
 
-	else if(empty($phone)){
+	else if(empty($_phone)){
         header("Location: signup.php?error=noph");
 		//error=Phone Number is required
 	    exit();
@@ -58,7 +61,7 @@ if (isset($_POST['uname']) && isset($_POST['password'])
         $pass =hash('sha256',$pass.strval($salt));
 		$id=mt_rand(10000000000,99999999999);
 
-	    $sql = "select * from User where user_name='$uname'";
+	    $sql = "select * from User where user_name='$_uname'";
 		$result = mysqli_query($conn, $sql);
 
 		if (mysqli_num_rows($result) > 0) {
@@ -66,7 +69,7 @@ if (isset($_POST['uname']) && isset($_POST['password'])
 			//error=The username is taken try another
 	        exit();
 		}else {
-           $sql2 = "insert into User value('$id','$uname','$salt', '$pass', '$phone')";
+           $sql2 = "insert into User value('$id','$_uname','$salt', '$pass', '$_phone')";
            $result2 = mysqli_query($conn, $sql2);
            if ($result2) {
            	 header("Location: login.php?success=Your account has been created successfully");
