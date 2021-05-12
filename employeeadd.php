@@ -4,27 +4,27 @@ include "db_conn.php";
 
 if (isset($_POST['addemployee'])) {
 
-	function validate($data){
+    function validate($data){
        $data = trim($data);
-	   $data = stripslashes($data);
-	   $data = htmlspecialchars($data);
-	   return $data;
-	}
+       $data = stripslashes($data);
+       $data = htmlspecialchars($data);
+       return $data;
+    }
 
-	$addemployee = validate($_POST['addemployee']);
+    $addemployee = validate($_POST['addemployee']);
     $shoppid=$_SESSION['shop_id'];
     if($addemployee===$_SESSION['user_name']){
         header("Location: shop.php?error=you cannot add yourself !");
-		//error=no such person
-	    exit();
+        //error=no such person
+        exit();
     }
 
-	$sql = "SELECT * FROM User WHERE user_name='$addemployee'";
+    $sql = "SELECT * FROM User WHERE user_name='$addemployee'";
     $result=$conn->query($sql);
     if($result->num_rows!=1){
         header("Location: shop.php?error=no such person");
-		//error=no such person
-	    exit();
+        //error=no such person
+        exit();
     }
     $row = $result->fetch_assoc();
     $employeeuserid=$row['user_id'];
@@ -34,7 +34,7 @@ if (isset($_POST['addemployee'])) {
     $checkresult=$conn->query($checkalreadyexistsql);
     if($checkresult->num_rows>0){
         header("Location: shop.php?error=he is already a employee!");
-		//error=employee already in this shop
+        //error=employee already in this shop
         exit();
     }
 
@@ -50,7 +50,7 @@ if (isset($_POST['addemployee'])) {
             header("Location: shop.php?error=fail to insert");
             exit();
     }
-    header("Location: shop.php?");	
-	exit();
+    header("Location: shop.php?");  
+    exit();
 
 }
