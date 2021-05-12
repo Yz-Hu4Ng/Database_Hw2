@@ -17,6 +17,7 @@ if(isset($_POST['shopname']) && isset($_POST['maskamount']) && isset($_POST['mas
 	$shopname = validate($_POST['shopname']);
 	$maskprice = validate($_POST['maskprice']);
 	$maskamount = validate($_POST['maskamount']);
+	
 
 	//information to insert into manager table
 	$userid = $_SESSION['user_id'];
@@ -26,22 +27,33 @@ if(isset($_POST['shopname']) && isset($_POST['maskamount']) && isset($_POST['mas
 	//reject when shopname has been taken
 
 	if (empty($shoploc) || empty($shopname) || empty($maskprice) || empty($maskamount)) {
-		echo "<script>alert('Register failed: Please fill in every slots.');location.href = 'shop.php';</script>";
+		
+		$_SESSION['is_owner'] = FALSE;
+		echo "<script>alert('Register failed: Please fill in every slots.');";
+		echo "window.location.href = 'shop.php'";
+		echo "</script>";
+		exit();
+
+/*
+		echo "<script>alert('successfully sign up');" ;
+				echo  "window.location.href='login.php'";
+				echo "</script>";
+				sleep(0.5);
+*/
 	}
 
 	if(!(is_numeric($_POST['maskamount']) && $_POST['maskamount'] > 0)){
 		echo "<script>alert('Register failed: Invalid maskamount.');location.href = 'shop.php';</script>";
 		//header("Location: shop.php?error=invalid_maskamount");
-		//exit();
+		exit();
 	}
 
 	if(!(is_numeric($_POST['maskprice']) && $_POST['maskprice'] > 0)){
 		echo "<script>alert('Register failed: Invalid maskprice.');location.href = 'shop.php';</script>";
 		//header("Location: shop.php?error=invalid_maskprice");
-		//exit();
+		exit();
 	}
 
-	//echo "<script>alert('指令碼學堂,www.jbxue.com')</script>"; 
 
 	$sql = "select shop_name from Shop where shop_name='$shopname'";
 	$result = mysqli_query($conn, $sql);
@@ -49,7 +61,7 @@ if(isset($_POST['shopname']) && isset($_POST['maskamount']) && isset($_POST['mas
 	if (mysqli_num_rows($result) > 0) {
 		echo "<script>alert('Register failed: Used shop name.');location.href = 'shop.php';</script>";
 		//header("Location: shop.php?error=used_shopname");
-		//exit();
+		exit();
 	}
 	else{
 		//insert data into Shop table and Manager table
@@ -58,8 +70,12 @@ if(isset($_POST['shopname']) && isset($_POST['maskamount']) && isset($_POST['mas
 		$result2 = mysqli_query($conn, $to_insert_to_Shop);
 		$result3 = mysqli_query($conn, $to_insert_to_Manager);
            if ($result2 && $result3) {
-           	 header("Location: shop.php?success=Congrats!! Your are now a shop owner");
+           	 //header("Location: shop.php?success=Congrats!! Your are now a shop owner");
            	 $_SESSION['is_owner'] = true;
+				echo "<script>alert('successfully create shop');" ;
+				echo  "window.location.href='shop.php'";
+				echo "</script>";
+				sleep(0.5);
 	         exit();
            }else {
 	         header("Location: shop.php?error=Sorry, something went wrong...");

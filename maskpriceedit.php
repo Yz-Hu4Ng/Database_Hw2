@@ -34,5 +34,3 @@ if (isset($_POST['mskpriceedit'])) {
 		exit();
 	}
 }
-
-	

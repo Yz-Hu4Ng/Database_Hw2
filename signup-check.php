@@ -43,6 +43,11 @@ if (isset($_POST['uname']) && isset($_POST['password'])
 		//error=Phone Number is required
 	    exit();
 	}
+	else if(!is_numeric($phone)){
+		header("Location: signup.php?error=phinval");
+		//error=Phone Number format invalid
+	    exit();
+	}
 
 	else if($pass !== $re_pass){
         header("Location: signup.php?error=pwrepw");
@@ -69,9 +74,12 @@ if (isset($_POST['uname']) && isset($_POST['password'])
            $sql2 = "insert into User value('$id','$uname','$salt', '$pass', '$phone')";
            $result2 = mysqli_query($conn, $sql2);
            if ($result2) {
-
-           	 header("Location: login.php?success=Your account has been created successfully");
-
+				echo "<script>alert('successfully sign up');" ;
+				echo  "window.location.href='login.php'";
+				echo "</script>";
+				sleep(0.5);
+				//header("Location: login.php?success=Your account has been created successfully");
+				
 	         exit();
            }else {
 	           	header("Location: signup.php?error=unknown error occurred");

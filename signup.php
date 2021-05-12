@@ -59,6 +59,9 @@
                     case"pwoc":
                          $er1="The username is taken, please try another one =)";
                          break;
+                    case"phinval":
+                         $er2="The password form is invalid";
+                         break;
 
                }
 
