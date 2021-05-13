@@ -18,9 +18,15 @@ if (isset($_POST['addemployee'])) {
 		//error=no such person
 	    exit();
     }
+    $addemployee=$conn->real_escape_string($addemployee);
+	 $sql = "SELECT * FROM User WHERE user_name='$addemployee'";
+     //$sql=sprintf("SELECT * FROM User WHERE user_name=%s",$conn->real_escape_string($addemployee));
 
-	$sql = "SELECT * FROM User WHERE user_name='$addemployee'";
-    $result=$conn->query($sql);
+     $result=$conn->query($sql);
+
+
+
+ 
     if($result->num_rows!=1){
         header("Location: shop.php?error=no such person");
 		//error=no such person
@@ -29,17 +35,20 @@ if (isset($_POST['addemployee'])) {
     $row = $result->fetch_assoc();
     $employeeuserid=$row['user_id'];
 
-
-    $checkalreadyexistsql="SELECT * FROM Clerk WHERE user_id=$employeeuserid and shop_id=$shoppid";
-    $checkresult=$conn->query($checkalreadyexistsql);
     if($checkresult->num_rows>0){
         header("Location: shop.php?error=he is already a employee!");
 		//error=employee already in this shop
         exit();
     }
 
-    $clerkidgenerated=rand(0,10**80);
-    $insertsql="INSERT into Clerk value('$employeeuserid','$employeeuserid','$shoppid')";
+    $clerkidgenerated=rand(0,10**30);
+
+    $clerkidgenerated=$conn->real_escape_string($clerkidgenerated);
+    $employeeuserid=$conn->real_escape_string($employeeuserid);
+    $shoppid=$conn->real_escape_string($shoppid);
+    
+
+    $insertsql="INSERT into Clerk value('$clerkidgenerated','$employeeuserid','$shoppid')";
 
     $result2 = mysqli_query($conn, $insertsql);
     if ($result2) {

@@ -63,6 +63,9 @@ if (isset($_POST['uname']) && isset($_POST['password'])
         $pass =hash('sha256',$pass.strval($salt));
 		$id=mt_rand(10000000000,99999999999);
 
+		$uname=$conn->real_escape_string($uname);
+		
+
 	    $sql = "select * from User where user_name='$uname'";
 		$result = mysqli_query($conn, $sql);
 
@@ -71,6 +74,13 @@ if (isset($_POST['uname']) && isset($_POST['password'])
 			//error=The username is taken try another
 	        exit();
 		}else {
+			$id=$conn->real_escape_string($id);
+			$uname=$conn->real_escape_string($uname);
+			$salt=$conn->real_escape_string($salt);
+			$pass=$conn->real_escape_string($pass);
+			$phone=$conn->real_escape_string($phone);
+
+
            $sql2 = "insert into User value('$id','$uname','$salt', '$pass', '$phone')";
            $result2 = mysqli_query($conn, $sql2);
            if ($result2) {

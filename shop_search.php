@@ -33,6 +33,10 @@ if(isset($_SESSION['user_id'])
     /*
     $sql = "search Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price from Shop natural join Manager natural join Clerk where Shop.shop_name like %$searchshopname% and city = '$searchcity' ";
     */
+
+    $searchshopname=$conn->real_escape_string($searchshopname);
+    $searchcity=$conn->real_escape_string($searchcity);
+
     $sql = "select Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price 
             from Shop natural join Manager
             where Shop.shop_name like '%$searchshopname%' and city = '$searchcity' ";
@@ -45,6 +49,7 @@ if(isset($_SESSION['user_id'])
     if($searchamount == "m") {$sql .= "and mask_count < 100 and mask_count > 50 ";$sql .= "and mask_count < 100 and mask_count > 50 ";}
     if($searchamount == "s") {$sql .= "and mask_count <= 50 ";$sql2 .= "and mask_count <= 50 ";}
     
+    $searchpricea=$conn->real_escape_string($searchpricea);
     if(empty($searchpricea)){
        $sql .= "and mask_price >= 0 ";
        $sql2 .= "and mask_price >= 0 ";
@@ -53,7 +58,7 @@ if(isset($_SESSION['user_id'])
       $sql .= "and mask_price >= $searchpricea ";
       $sql2 .= "and mask_price >= $searchpricea ";
     }
-
+    $searchpriceb=$conn->real_escape_string($searchpriceb);
     if(empty($searchpriceb)) {
       $sql .= "and mask_price < 99999999999999 ";
       $sql2 .= "and mask_price < 99999999999999 ";
@@ -63,6 +68,7 @@ if(isset($_SESSION['user_id'])
       $sql2 .= "and mask_price < $searchpriceb ";
     }
 
+    $userid=$conn->real_escape_string($userid);
     if(isset($_POST['search_shop_i_work'])) {$sql .= "and Manager.user_id = '$userid' "; $sql2 .= "and Clerk.user_id = '$userid' ";}
     
     

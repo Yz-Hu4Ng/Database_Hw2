@@ -22,7 +22,7 @@ if (isset($_POST['uname']) && isset($_POST['password'])) {
 	    exit();
 	}else{
 	
-
+		$uname=$conn->real_escape_string($uname);
 		$sql = "select * from User where user_name='$uname'";
 		$result = mysqli_query($conn, $sql);
 
@@ -34,6 +34,7 @@ if (isset($_POST['uname']) && isset($_POST['password'])) {
             	$_SESSION['user_name'] = $row['user_name'];
             	$userid = $_SESSION['user_id'] = $row['user_id'];
 				$_SESSION['phone']=$row['phone'];
+				$userid=$conn->real_escape_string($userid);
 				$sql = "select * from Manager where user_id ='$userid'";
 				$result = mysqli_query($conn, $sql);
 				if(mysqli_num_rows($result) > 0) {
