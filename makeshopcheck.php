@@ -18,6 +18,11 @@ if(isset($_POST['shopname']) && isset($_POST['maskamount']) && isset($_POST['mas
 	$maskprice = validate($_POST['maskprice']);
 	$maskamount = validate($_POST['maskamount']);
 
+	$_shoploc = mysqli_real_escape_string($conn , $shoploc);
+	$_shopname = mysqli_real_escape_string($conn , $shopname);
+	$_maskprice = mysqli_real_escape_string($conn , $maskprice);
+	$_maskamount = mysqli_real_escape_string($conn , $maskamount);
+
 	//information to insert into manager table
 	$userid = $_SESSION['user_id'];
 	$managerid=mt_rand(1000000,9999999);

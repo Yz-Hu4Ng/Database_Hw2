@@ -14,6 +14,8 @@ if (isset($_POST['uname']) && isset($_POST['password'])) {
 	$uname = validate($_POST['uname']);
 	$pass = validate($_POST['password']);
 
+	$_uname = mysqli_real_escape_string($conn , $uname);
+
 	if (empty($uname)) {
 		header("Location: index.php?error=User Name is required");
 	    exit();

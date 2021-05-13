@@ -29,6 +29,10 @@ if(isset($_SESSION['user_id'])
     $searchpricea = validate($_POST['searchpricea']);//price lower bound a
     $searchpriceb = validate($_POST['searchpriceb']);//price upper bound b
     $searchamount = validate($_POST['searchamount']);//user's input to search for masks amount
+
+    $_searchshopname = mysqli_real_escape_string($conn , $searchshopname);
+    $_searchcity = mysqli_real_escape_string($conn , $searchcity);
+
     //$search_shop_i_work = validate($_POST['search_shop_i_work']);//only showing shop that user works at or showing all 
     /*
     $sql = "search Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price from Shop natural join Manager natural join Clerk where Shop.shop_name like %$searchshopname% and city = '$searchcity' ";
@@ -39,10 +43,10 @@ if(isset($_SESSION['user_id'])
 
     $sql = "select Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price 
             from Shop natural join Manager
-            where Shop.shop_name like '%$searchshopname%' and city = '$searchcity' ";
+            where Shop.shop_name like '%$_searchshopname%' and city = '$_searchcity' ";
     $sql2 = "select Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price 
             from Shop natural join Clerk
-            where Shop.shop_name like '%$searchshopname%' and city = '$searchcity' ";
+            where Shop.shop_name like '%$_searchshopname%' and city = '$_searchcity' ";
 
 
     if($searchamount == "l") {$sql .= "and mask_count >= 100 ";$sql2 .= "and mask_count >= 100 ";}
@@ -80,9 +84,9 @@ if(isset($_SESSION['user_id'])
 <html>
 
 <head>
-	<title>HOME</title>
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<meta charset="utf-8">
+  <title>HOME</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8">
      <meta name="viewport" content="width=device-width, initial-scale=1">
      <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
      <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>

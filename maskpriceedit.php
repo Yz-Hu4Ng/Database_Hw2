@@ -12,8 +12,8 @@ if (isset($_POST['mskpriceedit'])) {
 	}
 	
 
-	$mskpriceeidt = validate($_POST['mskpriceedit']);
-	if($mskpriceeidt<0){
+	$_mskpriceeidt = validate($_POST['mskpriceedit']);
+	if($_mskpriceeidt<0){
         header("Location: shop.php?error=price must be greater than 0");
 		//error=price must be greater than 0
 	    exit();
