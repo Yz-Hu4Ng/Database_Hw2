@@ -19,7 +19,7 @@ if(isset($_POST['shopname']) && isset($_POST['maskamount']) && isset($_POST['mas
 	$maskamount = validate($_POST['maskamount']);
 
 	$_shoploc = mysqli_real_escape_string($conn , $shoploc);
-	$_shopname = mysqli_real_escape_string($conn , $shopname);
+	$_shopname = mysqli_real_escape_string($conn ,$shopname);
 	$_maskprice = mysqli_real_escape_string($conn , $maskprice);
 	$_maskamount = mysqli_real_escape_string($conn , $maskamount);
 
@@ -31,7 +31,7 @@ if(isset($_POST['shopname']) && isset($_POST['maskamount']) && isset($_POST['mas
 	//reject when shopname has been taken
 	$flag = true;
 
-	if (empty($shoploc) || empty($shopname) || empty($maskprice) || empty($maskamount)) {
+	if (empty($_shoploc) || empty($_shopname) || empty($_maskprice) || empty($_maskamount)) {
 		echo "<script>alert('You must fill in every slots.');" ;
 		echo  "window.location.href='shop.php'";
 		echo "</script>";
@@ -53,8 +53,8 @@ if(isset($_POST['shopname']) && isset($_POST['maskamount']) && isset($_POST['mas
 		exit();
 	}
 
-	$shopname=$conn->real_escape_string($shopname);
-	$sql = "select shop_name from Shop where shop_name='$shopname'";
+
+	$sql = "select shop_name from Shop where shop_name='$_shopname'";
 	$result = mysqli_query($conn, $sql);
 
 	if (mysqli_num_rows($result) > 0) {
@@ -64,18 +64,7 @@ if(isset($_POST['shopname']) && isset($_POST['maskamount']) && isset($_POST['mas
 	}
 	else if($flag != false){
 		//insert data into Shop table and Manager table
-		
-		$shopid=$conn->real_escape_string($shopid);
-		$shopname=$conn->real_escape_string($shopname);
-		$maskamount=$conn->real_escape_string($maskamount);
-		$maskprice=$conn->real_escape_string($maskprice);		
-		$managerid=$conn->real_escape_string($managerid);
-		$userid=$conn->real_escape_string($userid);
-		$shopid=$conn->real_escape_string($shopid);
-		
-		
-		
-		$to_insert_to_Shop = "insert into Shop value('$shopid','$shopname','$shoploc', '$maskamount', '$maskprice')";
+		$to_insert_to_Shop = "insert into Shop value('$shopid','$_shopname','$_shoploc', '$_maskamount', '$_maskprice')";
 		$to_insert_to_Manager = "insert into Manager value('$managerid' , '$userid' , '$shopid')";
 		$result2 = mysqli_query($conn, $to_insert_to_Shop);
 		$result3 = mysqli_query($conn, $to_insert_to_Manager);

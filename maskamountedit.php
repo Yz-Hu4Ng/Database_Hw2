@@ -20,9 +20,7 @@ if (isset($_POST['mskamountedit'])) {
 
 	
 	$shoppid=$_SESSION['shop_id'];
-	
-	$mskamountedit=$conn->real_escape_string($mskamountedit);
-	$shoppid=$conn->real_escape_string($shoppid);
+
 	$sql = "UPDATE Shop SET mask_count='$mskamountedit' WHERE shop_id='$shoppid'";
 
 	if ($conn->query($sql) === TRUE) {

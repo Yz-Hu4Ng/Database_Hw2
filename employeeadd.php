@@ -4,51 +4,37 @@ include "db_conn.php";
 
 if (isset($_POST['addemployee'])) {
 
-    function validate($data){
+	function validate($data){
        $data = trim($data);
-       $data = stripslashes($data);
-       $data = htmlspecialchars($data);
-       return $data;
-    }
+	   $data = stripslashes($data);
+	   $data = htmlspecialchars($data);
+	   return $data;
+	}
 
-    $addemployee = validate($_POST['addemployee']);
+	$addemployee = validate($_POST['addemployee']);
     $shoppid=$_SESSION['shop_id'];
-    if($addemployee===$_SESSION['user_name']){
-        header("Location: shop.php?error=you cannot add yourself !");
-        //error=no such person
-        exit();
-    }
-    $addemployee=$conn->real_escape_string($addemployee);
-	 $sql = "SELECT * FROM User WHERE user_name='$addemployee'";
-     //$sql=sprintf("SELECT * FROM User WHERE user_name=%s",$conn->real_escape_string($addemployee));
 
-     $result=$conn->query($sql);
-
-
-
- 
+	$sql = "SELECT * FROM User WHERE user_name='$addemployee'";
+    $result=$conn->query($sql);
     if($result->num_rows!=1){
         header("Location: shop.php?error=no such person");
-        //error=no such person
-        exit();
+		//error=no such person
+	    exit();
     }
     $row = $result->fetch_assoc();
     $employeeuserid=$row['user_id'];
 
+
+    $checkalreadyexistsql="SELECT * FROM Clerk WHERE user_id=$employeeuserid and shop_id=$shoppid";
+    $checkresult=$conn->query($checkalreadyexistsql);
     if($checkresult->num_rows>0){
         header("Location: shop.php?error=he is already a employee!");
-        //error=employee already in this shop
+		//error=employee already in this shop
         exit();
     }
 
-    $clerkidgenerated=rand(0,10**30);
-
-    $clerkidgenerated=$conn->real_escape_string($clerkidgenerated);
-    $employeeuserid=$conn->real_escape_string($employeeuserid);
-    $shoppid=$conn->real_escape_string($shoppid);
-    
-
-    $insertsql="INSERT into Clerk value('$clerkidgenerated','$employeeuserid','$shoppid')";
+    $clerkidgenerated=rand(0,10**80);
+    $insertsql="INSERT into Clerk value('$employeeuserid','$employeeuserid','$shoppid')";
 
     $result2 = mysqli_query($conn, $insertsql);
     if ($result2) {
@@ -59,7 +45,7 @@ if (isset($_POST['addemployee'])) {
             header("Location: shop.php?error=fail to insert");
             exit();
     }
-    header("Location: shop.php?");  
-    exit();
+    header("Location: shop.php?");	
+	exit();
 
 }

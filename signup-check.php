@@ -61,14 +61,7 @@ if (isset($_POST['uname']) && isset($_POST['password'])
         $pass =hash('sha256',$pass.strval($salt));
 		$id=mt_rand(10000000000,99999999999);
 
-<<<<<<< HEAD
-		$uname=$conn->real_escape_string($uname);
-		
-
-	    $sql = "select * from User where user_name='$uname'";
-=======
 	    $sql = "select * from User where user_name='$_uname'";
->>>>>>> 5bbae7d4952bfbe4ab17f6aed9b7666eb2c8350b
 		$result = mysqli_query($conn, $sql);
 
 		if (mysqli_num_rows($result) > 0) {
@@ -76,18 +69,7 @@ if (isset($_POST['uname']) && isset($_POST['password'])
 			//error=The username is taken try another
 	        exit();
 		}else {
-<<<<<<< HEAD
-			$id=$conn->real_escape_string($id);
-			$uname=$conn->real_escape_string($uname);
-			$salt=$conn->real_escape_string($salt);
-			$pass=$conn->real_escape_string($pass);
-			$phone=$conn->real_escape_string($phone);
-
-
-           $sql2 = "insert into User value('$id','$uname','$salt', '$pass', '$phone')";
-=======
            $sql2 = "insert into User value('$id','$_uname','$salt', '$pass', '$_phone')";
->>>>>>> 5bbae7d4952bfbe4ab17f6aed9b7666eb2c8350b
            $result2 = mysqli_query($conn, $sql2);
            if ($result2) {
            	 header("Location: login.php?success=Your account has been created successfully");

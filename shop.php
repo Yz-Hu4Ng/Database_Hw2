@@ -139,7 +139,6 @@ if (isset($_SESSION['is_owner']) && $_SESSION['is_owner'] == true) {
     
   <?php 
     $shoppid=$_SESSION['shop_id'];
-    $shoppid=$conn->real_escape_string($shoppid);
     $sql="SELECT * FROM Clerk natural join User WHERE shop_id='$shoppid'";
     $result=$conn->query($sql);
     ?>

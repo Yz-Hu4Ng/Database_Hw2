@@ -12,8 +12,8 @@ if (isset($_POST['mskpriceedit'])) {
 	}
 	
 
-	$_mskpriceeidt = validate($_POST['mskpriceedit']);
-	if($_mskpriceeidt<0){
+	$mskpriceeidt = validate($_POST['mskpriceedit']);
+	if($mskpriceeidt<0){
         header("Location: shop.php?error=price must be greater than 0");
 		//error=price must be greater than 0
 	    exit();
@@ -21,9 +21,6 @@ if (isset($_POST['mskpriceedit'])) {
 
 	
 	$shoppid=$_SESSION['shop_id'];
-
-	$mskpriceeidt=$conn->real_escape_string($mskpriceeidt);
-	$shoppid=$conn->real_escape_string($shoppid);
 
 	$sql = "UPDATE Shop SET mask_price='$mskpriceeidt' WHERE shop_id='$shoppid'";
 
