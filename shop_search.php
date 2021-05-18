@@ -1,13 +1,14 @@
 <?php
 session_start();
 include "db_conn.php";
-if(isset($_SESSION['user_id']) 
-    && isset($_SESSION['user_name'])
-    && isset($_POST['searchshopname']) 
-    && isset($_POST['selectcity'])
-    && (isset($_POST['searchpricea']) || isset($_POST['searchpriceb']))
-    && isset($_POST['searchamount'])
-    ){
+if((isset($_SESSION['user_id'])
+    && isset($_SESSION['user_name']))
+    &&( isset($_POST['searchshopname'])
+    || isset($_POST['selectcity'])
+    || isset($_POST['searchpricea'])
+	|| isset($_POST['searchpriceb'])
+    || isset($_POST['searchamount']))
+){
 
     function validate($data){
       $data = trim($data);
@@ -16,58 +17,71 @@ if(isset($_SESSION['user_id'])
       return $data;
     }
 
-    // three situations :
-    // only > a 
-    // only < b
-    // a <= x <= b
-
     $userid = validate($_SESSION['user_id']);
     $username = validate($_SESSION['user_name']);
-    
-    $searchshopname = validate($_POST['searchshopname']);//user's input to search for shop name
-    $searchcity = validate($_POST['selectcity']);
-    $searchpricea = validate($_POST['searchpricea']);//price lower bound a
-    $searchpriceb = validate($_POST['searchpriceb']);//price upper bound b
-    $searchamount = validate($_POST['searchamount']);//user's input to search for masks amount
-    //$search_shop_i_work = validate($_POST['search_shop_i_work']);//only showing shop that user works at or showing all 
+
+	$sql = "select Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price
+            from Shop natural join Manager ";
+    $sql2 = "select Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price
+            from Shop natural join Clerk ";
+
+    if(isset($_POST['searchshopname'])){
+		$searchshopname = validate($_POST['searchshopname']);
+		$sql .= "where Shop.shop_name like '%$searchshopname%' ";
+		$sql2 .= "where Shop.shop_name like '%$searchshopname%' ";
+	}
+    if(isset($_POST['selectcity']) && $_POST['selectcity'] != ""){
+		$selectcity = validate($_POST['selectcity']);
+		$sql .= "and Shop.city = '$selectcity' ";
+		$sql2 .= "and Shop.city = '$selectcity' ";
+	}
+	if(isset($_POST['searchpricea'])){
+		$searchpricea = validate($_POST['searchpricea']);
+		if(empty($searchpricea)){
+	       $sql .= "and mask_price >= 0 ";
+	       $sql2 .= "and mask_price >= 0 ";
+	    }
+		else{
+			$sql .= "and mask_price >= $searchpricea ";
+  	      	$sql2 .= "and mask_price >= $searchpricea ";
+		}
+	}
+	if(isset($_POST['searchpriceb'])){
+		$searchpriceb = validate($_POST['searchpriceb']);
+		if(!empty($searchpriceb)){
+			$sql .= "and mask_price < $searchpriceb ";
+  	      	$sql2 .= "and mask_price < $searchpriceb ";
+	    }
+	}
+
+
+
+    if(isset($_POST['searchamount'])){
+		$searchamount = validate($_POST['searchamount']);
+		if($searchamount == "l") {
+			$sql .= "and mask_count >= 100 ";
+			$sql2 .= "and mask_count >= 100 ";
+		}
+	    else if($searchamount == "m") {
+			$sql .= "and mask_count < 100 and mask_count > 50 ";
+			$sql2 .= "and mask_count < 100 and mask_count > 50 ";
+		}
+	    else if($searchamount == "s") {
+			$sql .= "and mask_count <= 50 ";
+			$sql2 .= "and mask_count <= 50 ";
+		}
+	}
+    //$search_shop_i_work = validate($_POST['search_shop_i_work']);//only showing shop that user works at or showing all
     /*
     $sql = "search Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price from Shop natural join Manager natural join Clerk where Shop.shop_name like %$searchshopname% and city = '$searchcity' ";
     */
-    $sql = "select Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price 
-            from Shop natural join Manager
-            where Shop.shop_name like '%$searchshopname%' and city = '$searchcity' ";
-    $sql2 = "select Shop.shop_name , Shop.city , Shop.mask_count , Shop.mask_price 
-            from Shop natural join Clerk
-            where Shop.shop_name like '%$searchshopname%' and city = '$searchcity' ";
 
 
-    if($searchamount == "l") {$sql .= "and mask_count >= 100 ";$sql2 .= "and mask_count >= 100 ";}
-    if($searchamount == "m") {$sql .= "and mask_count < 100 and mask_count > 50 ";$sql .= "and mask_count < 100 and mask_count > 50 ";}
-    if($searchamount == "s") {$sql .= "and mask_count <= 50 ";$sql2 .= "and mask_count <= 50 ";}
-    
-    if(empty($searchpricea)){
-       $sql .= "and mask_price >= 0 ";
-       $sql2 .= "and mask_price >= 0 ";
-    }
-    else {
-      $sql .= "and mask_price >= $searchpricea ";
-      $sql2 .= "and mask_price >= $searchpricea ";
-    }
+    if(isset($_POST['search_shop_i_work'])) {
+		$sql .= "and Manager.user_id = '$userid' ";
+		$sql2 .= "and Clerk.user_id = '$userid' ";
+	}
 
-    if(empty($searchpriceb)) {
-      $sql .= "and mask_price < 99999999999999 ";
-      $sql2 .= "and mask_price < 99999999999999 ";
-    }
-    else{
-      $sql .= "and mask_price < $searchpriceb ";
-      $sql2 .= "and mask_price < $searchpriceb ";
-    }
-
-    if(isset($_POST['search_shop_i_work'])) {$sql .= "and Manager.user_id = '$userid' "; $sql2 .= "and Clerk.user_id = '$userid' ";}
-    
-    
-
-  
 ?>
 
 <!DOCTYPE html>
@@ -104,7 +118,7 @@ if(isset($_SESSION['user_id'])
   //echo $sql;
   $result = mysqli_query($conn , $sql);
   $result2 = mysqli_query($conn , $sql2);
-  
+
   if ($result->num_rows === 0 && $result2->num_rows === 0){
       echo "<a>Sorry , result not found.</a>";
       echo "<br>";
@@ -121,7 +135,7 @@ if(isset($_SESSION['user_id'])
         </tr>
       </thead>
   <?php
-      while ($row= $result->fetch_row()){
+      while ($row = $result->fetch_row()){
           //echo "I'm inside while loop";
           echo "<div id='contentItem'>";
           echo "Shop name : $row[0] , city : $row[1] , mask amount = $row[2] , mask_price = $row[3]";
@@ -139,11 +153,11 @@ if(isset($_SESSION['user_id'])
       mysqli_free_result($result2);
       mysqli_free_result($result);
   }
-  
+
   ?>
 </table>
   </div>
-    
+
 <style>
   .scrollsearch{
   overflow-x: hidden;
