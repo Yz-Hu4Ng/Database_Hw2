@@ -42,6 +42,8 @@ if (isset($_SESSION['is_owner']) && $_SESSION['is_owner'] == true) {
     </div>
     <ul class="nav navbar-nav">
       <li><a href="shop.php">Shop</a></li>
+      <li><a href="myorder.php">Myorder</a></li>
+      <li><a href="shoporder.php">Shoporder</a></li>
       <li><a href="logout.php">Logout</a></li>
     </ul>
   </div>
@@ -223,6 +225,8 @@ if (!isset($_SESSION['is_owner']) || $_SESSION['is_owner'] == false) {
     <ul class="nav navbar-nav">
       <li><a href="shop.php">Shop</a></li>
       <li><a href="logout.php">Logout</a></li>
+            <li><a href="myorder.php">Myorder</a></li>
+      <li><a href="shoporder.php">Shoporder</a></li>
     </ul>
   </div>
 </nav>
