@@ -1,5 +1,5 @@
-<?php 
-session_start(); 
+<?php
+session_start();
 include "db_conn.php";
 
 if (isset($_POST['addemployee'])) {
@@ -33,7 +33,7 @@ if (isset($_POST['addemployee'])) {
         exit();
     }
 
-    $clerkidgenerated=rand(0,10**80);
+    $clerkidgenerated=rand(0,100000000000);
     $insertsql="INSERT into Clerk value('$employeeuserid','$employeeuserid','$shoppid')";
 
     $result2 = mysqli_query($conn, $insertsql);
@@ -45,7 +45,7 @@ if (isset($_POST['addemployee'])) {
             header("Location: shop.php?error=fail to insert");
             exit();
     }
-    header("Location: shop.php?");	
+    header("Location: shop.php?");
 	exit();
 
 }
