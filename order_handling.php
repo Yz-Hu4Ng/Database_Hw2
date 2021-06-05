@@ -16,7 +16,7 @@ if (isset($_POST['order_amount']) && is_numeric($_POST['order_amount']) && $_POS
 	$order_shop_id = validate($_POST['order_shop_id']);
 	$user_id = $_SESSION['user_id'];
 	if(is_numeric($order_amount) && $order_amount > 0){
-		$orderidgenerated=rand(0,100000000000);
+		$orderidgenerated=rand(0,10000000000);
 		$current_time = date('Y-m-d H:i:s');
 		$check_if_enough = "select Shop.mask_count from Shop where Shop.shop_name = '$order_shop_name'";
 		$result=$conn->query($check_if_enough);
