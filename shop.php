@@ -57,15 +57,15 @@ if (isset($_SESSION['is_owner']) && $_SESSION['is_owner'] == true) {
           if($result->num_rows>0){
             $row = $result->fetch_assoc();
             $shopnametoshow=$row["shop_name"];
-            
+
             $shopcitytoshow=$row["city"];
             $shopmask=$row["mask_count"];
-            
+
             $maskprice=$row["mask_price"];
 
             $_SESSION['shop_id'] = $row['shop_id'];
-            
-          }                
+
+          }
       ?>
       <p><b>Shop:</b> <?php echo $shopnametoshow; ?></p>
       <p><b>City:</b> <?php echo $shopcitytoshow; ?></p>
@@ -73,7 +73,7 @@ if (isset($_SESSION['is_owner']) && $_SESSION['is_owner'] == true) {
 
 <?php // this is where to change the mask price?>
 <body>
-  <?php 
+  <?php
       $error1="";
       if (isset($_GET['error'])&&$_GET['error']==="price must be greater than 0") {
           $error1="price must be greater than 0";
@@ -94,7 +94,7 @@ if (isset($_SESSION['is_owner']) && $_SESSION['is_owner'] == true) {
 
 <?php // this is where to change the mask amount?>
 <body>
-  <?php 
+  <?php
       $error2="";
       if (isset($_GET['error'])&&$_GET['error']==="amount must be greater than 0") {
           $error2="amount must be greater than 0";
@@ -114,8 +114,8 @@ if (isset($_SESSION['is_owner']) && $_SESSION['is_owner'] == true) {
 
 <body>
 <?php //this is where to add the employee?>
-  
-  <?php 
+
+  <?php
     // error issue
     $error3="";
     if (isset($_GET['error'])&&$_GET['error']!=="price must be greater than 0"&&$_GET['error']!=="amount must be greater than 0") {
@@ -138,8 +138,8 @@ if (isset($_SESSION['is_owner']) && $_SESSION['is_owner'] == true) {
 
 <body>
 <form type="text/css" action="deleteclerk.php" method="post">
-    
-  <?php 
+
+  <?php
     $shoppid=$_SESSION['shop_id'];
     $sql="SELECT * FROM Clerk natural join User WHERE shop_id='$shoppid'";
     $result=$conn->query($sql);
@@ -170,8 +170,8 @@ if (isset($_SESSION['is_owner']) && $_SESSION['is_owner'] == true) {
         </tbody>
         <?php
         $_SESSION['clerk_id']=$row["clerk_id"];
-        
-        
+
+
         ?>
 
         <br>
@@ -180,14 +180,14 @@ if (isset($_SESSION['is_owner']) && $_SESSION['is_owner'] == true) {
     } else {
       echo "there is no employee";
     }
-    
+
 
   ?>
   </table>
 </form>
 </body>
 
-      
+
 </html>
 <?php
 }
@@ -263,7 +263,7 @@ if (!isset($_SESSION['is_owner']) || $_SESSION['is_owner'] == false) {
 </html>
 
 
-  
+
 <?php
 }
 ?>

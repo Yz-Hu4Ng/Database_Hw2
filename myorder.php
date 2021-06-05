@@ -38,54 +38,51 @@ this is the top selecting area
 -->
 
 <body>
-  <form action="myorder.php" method="post">
-      <h1 style="text-align:left">My Order</h1>    
-     
+  <form action="?" method="post">
+      <h1 style="text-align:left">My Order</h1>
+
       <p><b>Status</b> </p>
           <select name="searchstatus" size="1" id="amount">
           <option value="a"> All </option>
           <option value="nf"> Not Finished </option>
           <option value="f"> Finished </option>
           <option value="c"> Cancelled </option></select>
-      
+
     <br>
     <br>
-      
+
       <button type="submit">search</button>
   </form>
-  
-<body>
 
-<form type="text/css" action="deleteclerk.php" method="post">
-    
-  <?php 
+
+
+
+
+  <?php
     $order_creater=$_SESSION['user_id'];
     if(isset($_POST['searchstatus'])){
         if($_POST['searchstatus']==="a"){
-            $sql="SELECT * FROM Orders  WHERE order_creater='$order_creater' ";
+            $sql="SELECT * FROM Orders natural join Shop  WHERE user_id ='$order_creater'";
         }
         if($_POST['searchstatus']==="nf"){
-            $sql="SELECT * FROM Orders  WHERE order_creater='$order_creater' and order_status='NotFinished'";
+            $sql="SELECT * FROM Orders natural join Shop WHERE Orders.user_id ='$order_creater' and order_status='NotFinished'";
         }
         if($_POST['searchstatus']==="f"){
-            $sql="SELECT * FROM Orders  WHERE order_creater='$order_creater' and order_status='Finishded'";
+            $sql="SELECT * FROM Orders  natural join Shop  WHERE Orders.user_id='$order_creater' and order_status='Finishded'";
         }
         if($_POST['searchstatus']==="c"){
-            $sql="SELECT * FROM Orders  WHERE order_creater='$order_creater' and order_status='Cancelled' ";
+            $sql="SELECT * FROM Orders natural join Shop WHERE Orders.user_id ='$order_creater' and order_status='Cancelled' ";
         }
 
 
 
 
-        
+
     }
 
-    
-    $result=$conn->query($sql);
+	$result = "";
+    if(isset($_POST['searchstatus']))$result=$conn->query($sql);
     ?>
-
-
-
     <table class="table">
     <thead class="thead-dark">
       <tr>
@@ -99,43 +96,52 @@ this is the top selecting area
         <th scope="col">#</th>
         <th scope="col">$$</th>
         <th scope="col">price</th>
+        <th scope="col">Action</th>
         <th scope="col"></th>
       </tr>
     </thead>
 
 <?php
-    if ($result->num_rows > 0) {
+    if ($result && isset($_POST['searchstatus'])) {
       // output data of each row
       while($row = $result->fetch_assoc()) {
-        //echo "name: " . $row["user_name"]. "Phone:" . $row["phone"];?>
-        <tbody>
-          <tr>
-            <th scope="row"><?php echo $row["user_name"]?></th>
-            <td><?php echo $row["phone"]?></td>
-            <td><button  type="submit">delete</button></td>
-          </tr>
-        </tbody>
-        <?php
-        $_SESSION['clerk_id']=$row["clerk_id"];
-               
-        ?>
+        echo 	"<tbody>";
+        echo  	"<tr>";
+        echo 	"<th scope='col'>" . $row['order_id'] . "</th>";
+		    echo  "<th scope='col'>" . $row['order_status'] . "</th>";
+        echo 	"<th scope='col'>" . $row['order_create_time'] . "</th>";
+		    echo 	"<th scope='col'>" . $_SESSION['user_name'] . "</th>";
+    	  echo 	"<th scope='col'>" . $row['order_finish_time'] . "</th>";
+        echo 	"<th scope='col'>" . $row['order_finisher'] . "</th>";
+        echo 	"<th scope='col'>" . $row['shop_name'] . "</th>";
+        echo 	"<th scope='col'>" . $row['order_num'] . "</th>";
+        echo 	"<th scope='col'>" . $row['order_price'] . "</th>";
+        echo 	"<th scope='col'>" .(int)$row['order_num']*(int)$row['order_price'] . "</th>";
 
-        <br>
-      <?php
+        if($row['order_finish_time'] === "None" ){
+          $_SESSION['order_id']=$row['order_id'];
+          echo 	"<th scope='col'><form method='post' action='cancelorder.php'>";
+           
+          echo 	'<button type="submit">Cancel</button>';
+          echo 	'</form></th>';
+          }
+          echo 	'</tr>';
+          echo 	'</tbody>';
+ 
       }
     } else {
-      echo "there is no employee";
+      echo "there is no order";
     }
-    
+
   ?>
   </table>
-</form>
-</body>
-  
+
+
+
   <?php
     if(isset($_POST['searchstatus'])){
         echo $_POST['searchstatus'];}
-  
+
   ?>
 
 <style>
