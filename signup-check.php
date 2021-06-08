@@ -1,6 +1,7 @@
-<?php 
-session_start(); 
+<?php
+session_start();
 include "db_conn.php";
+
 
 if (isset($_POST['uname']) && isset($_POST['password'])
     && isset($_POST['phone']) && isset($_POST['re_password'])) {
@@ -80,7 +81,7 @@ if (isset($_POST['uname']) && isset($_POST['password'])
            }
 		}
 	}
-	
+
 }else{
 	header("Location: signup.php");
 	exit();

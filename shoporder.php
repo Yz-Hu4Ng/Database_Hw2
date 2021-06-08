@@ -20,7 +20,7 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['user_name'])) {
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
-      <li><a class="navbar-brand" href=#>Home</a></li>
+      <li><a class="navbar-brand" href=home.php>Home</a></li>
     </div>
     <ul class="nav navbar-nav">
     <li><a href="shop.php">Shop</a></li>
@@ -79,25 +79,26 @@ this is the top selecting area
 
 
   <?php
-    $order_creater=$_SESSION['user_id'];
-	$sql = "SELECT * FROM Orders INNER JOIN Clerk on Orders.shop_id = Clerk.shop_id inner join Shop on Orders.shop_id = Shop.shop_id ";
-	$sql2 = "SELECT * FROM Orders INNER JOIN Manager on Orders.shop_id = Manager.shop_id inner join Shop on Orders.shop_id = Shop.shop_id ";
+	$sql = "SELECT * FROM Orders INNER JOIN Clerk on Orders.shop_id = Clerk.shop_id
+									inner join Shop on Orders.shop_id = Shop.shop_id where Clerk.user_id = {$_SESSION['user_id']} ";
+	$sql2 = "SELECT * FROM Orders INNER JOIN Manager on Orders.shop_id = Manager.shop_id
+									inner join Shop on Orders.shop_id = Shop.shop_id where Manager.user_id = {$_SESSION['user_id']} ";
 	if(isset($_POST['searchstatus'])){
         if($_POST['searchstatus']==="a"){
             $sql .= "";
 			$sql2 .= "";
         }
         if($_POST['searchstatus']==="nf"){
-            $sql .= "where Orders.order_status='NotFinished' ";
-			$sql2 .= "where Orders.order_status='NotFinished' ";
+            $sql .= "and Orders.order_status='NotFinished' ";
+			$sql2 .= "and Orders.order_status='NotFinished' ";
         }
         if($_POST['searchstatus']==="f"){
-            $sql .= "where Orders.order_status='Finished' ";
-			$sql2 .= "where Orders.order_status='Finished' ";
+            $sql .= "and Orders.order_status='Finished' ";
+			$sql2 .= "and Orders.order_status='Finished' ";
         }
         if($_POST['searchstatus']==="c"){
-            $sql .= "where Orders.order_status='Cancelled' ";
-			$sql2 .= "where Orders.order_status='Cancelled' ";
+            $sql .= "and Orders.order_status='Cancelled' ";
+			$sql2 .= "and Orders.order_status='Cancelled' ";
         }
     }
 	if(isset($_POST['searchshop'])){
@@ -120,11 +121,15 @@ this is the top selecting area
     <table class="table">
     <thead class="thead-dark">
       <tr>
-        <th scope="col">OID</th>
+	  <th scope="col">OID</th>
         <th scope="col">Status</th>
         <th scope="col">Start time</th>
         <th scope="col">End time</th>
+        <th scope="col">canceller/finsher</th>
         <th scope="col">Shop</th>
+        <th scope="col">#</th>
+        <th scope="col">$$</th>
+        <th scope="col">price</th>
         <th scope="col">Action</th>
 
       </tr>
@@ -142,15 +147,22 @@ this is the top selecting area
         echo 	"<tbody>";
         echo  	"<tr>";
         echo 	"<th scope='col'>" . $row['order_id'] . "</th>";
-		echo  	"<th scope='col'>" . $row['order_status'] . "</th>";
+		    echo  "<th scope='col'>" . $row['order_status'] . "</th>";
         echo 	"<th scope='col'>" . $row['order_create_time'] . "</th>";
-		echo 	"<th scope='col'>" . $row['order_finish_time'] . "</th>";
-    	echo 	"<th scope='col'>" . $row['shop_name'] . "</th>";
-		if(!($row['order_status'] === "Finished" || $row['order_status'] === "Cancelled")){
-		echo 	"<th scope='col'><form method='post' action='shoporder.php'>";
-    	echo 	'<input type="button" value="done">';
-		echo 	'<input type="button" value="cancel">';
-		echo 	'</form></th>';
+    	  echo 	"<th scope='col'>" . $row['order_finish_time'] . "</th>";
+        echo 	"<th scope='col'>" . $row['order_finisher'] . "</th>";
+        echo 	"<th scope='col'>" . $row['shop_name'] . "</th>";
+        echo 	"<th scope='col'>" . $row['order_num'] . "</th>";
+        echo 	"<th scope='col'>" . $row['order_price'] . "</th>";
+        echo 	"<th scope='col'>" .(int)$row['order_num']*(int)$row['order_price'] . "</th>";
+		if($row['order_finish_time'] === "None" ){
+		 $_SESSION['order_id']=$row['order_id'];
+		echo 	"<th scope='col'><form method='post' action='shopdone.php'>";
+    	echo 	'<button type="submit">Done</button>';
+		echo    '</form>';
+		echo 	"<form method='post' action='shopcancel.php'>";
+		echo 	'<button type="submit">Cancel</button>';
+		echo    '</form></th>';
 		}
 		echo 	'</tr>';
 		echo 	'</tbody>';
@@ -164,17 +176,24 @@ this is the top selecting area
   		}
         echo 	"<tbody>";
         echo  	"<tr>";
-        echo 	"<th scope='col'>" . $row['order_id'] . "</th>";
-		echo  	"<th scope='col'>" . $row['order_status'] . "</th>";
-        echo 	"<th scope='col'>" . $row['order_create_time'] . "</th>";
-		echo 	"<th scope='col'>" . $row['order_finish_time'] . "</th>";
-    	echo 	"<th scope='col'>" . $row['shop_name'] . "</th>";
-		if(!($row['order_status'] === "Finished" || $row['order_status'] === "Cancelled")){
-		echo 	"<th scope='col'><form method='post' action='shoporder.php'>";
-    	echo 	'<input type="button" value="done">';
-		echo 	'<input type="button" value="cancel">';
-		echo 	'</form></th>';
-		}
+		echo 	"<th scope='col'>" . $row['order_id'] . "</th>";
+		echo  "<th scope='col'>" . $row['order_status'] . "</th>";
+	echo 	"<th scope='col'>" . $row['order_create_time'] . "</th>";
+	  echo 	"<th scope='col'>" . $row['order_finish_time'] . "</th>";
+	echo 	"<th scope='col'>" . $row['order_finisher'] . "</th>";
+	echo 	"<th scope='col'>" . $row['shop_name'] . "</th>";
+	echo 	"<th scope='col'>" . $row['order_num'] . "</th>";
+	echo 	"<th scope='col'>" . $row['order_price'] . "</th>";
+	echo 	"<th scope='col'>" .(int)$row['order_num']*(int)$row['order_price'] . "</th>";
+	if($row['order_finish_time'] === "None" ){
+	 $_SESSION['order_id']=$row['order_id'];
+	echo 	"<th scope='col'><form method='post' action='shopdone.php'>";
+	echo 	'<button type="submit">Done</button>';
+	echo    '</form>';
+	echo 	"<form method='post' action='shopcancel.php'>";
+	echo 	'<button type="submit">Cancel</button>';
+	echo    '</form></th>';
+	}
 		echo 	'</tr>';
 		echo 	'</tbody>';
       }

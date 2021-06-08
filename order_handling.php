@@ -26,7 +26,25 @@ if (isset($_POST['order_amount']) && is_numeric($_POST['order_amount']) && $_POS
 			header("Location: shop_search.php?error=Sorry, we don't have that much masks...");
 			exit();
 		}
-		$insertsql= "insert into Orders value('$orderidgenerated','$current_time', '---------' , 'NotFinished' , '$user_id' , '$order_shop_id')";
+		#changed
+		# get the mask price
+		$order_price=-1;
+		$checkpricesql="SELECT * FROM Shop WHERE shop_id='$order_shop_id'";
+		$checkpriceresult=$conn->query($checkpricesql);
+		if($result->num_rows!==1){
+			echo "The price asked has some error!!";
+			header('Refresh: 2;URL=shop_search.php');
+
+		}else{
+			$thisrow=$checkpriceresult->fetch_assoc();
+			$order_price=$thisrow["mask_price"];
+		}
+
+
+
+		#changed now the table insets the order amount and the order price
+
+		$insertsql= "insert into Orders value('$orderidgenerated','$current_time', 'None' , 'NotFinished' , '$user_id' , '$order_shop_id','$order_amount','$order_price','None')";
 		$result2 = mysqli_query($conn, $insertsql);
 	    if ($result2) {
 			$updatesql = "UPDATE Shop SET mask_count = ($mask_shop_have - $order_amount) WHERE shop_id='$order_shop_id'";

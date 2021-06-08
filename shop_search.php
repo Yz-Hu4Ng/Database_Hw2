@@ -11,7 +11,6 @@ if((isset($_SESSION['user_id'])
 	|| isset($_POST['searchpricea'])
 	|| isset($_POST['searchpriceb'])
 	|| isset($_POST['searchamount']))
-
 	*/
     function validate($data){
       $data = trim($data);
