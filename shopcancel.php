@@ -9,7 +9,14 @@ $OID=$_SESSION['order_id'];
 $current_time = date('Y-m-d H:i:s');
 $canceler=$_SESSION['user_name'];
 
-
+$checksql = "select order_status from Orders where order_id = $OID";
+$result = $conn -> query($checksql);
+$row = $result->fetch_assoc();
+if($row['order_status'] === "Finished" || $row['order_status'] === "Cancelled"){
+	echo "Sorry, This order has been finished.";
+	header('Refresh: 2;URL=shoporder.php');
+	exit();
+}
 
 #alter the order and alter the finish labels
 
