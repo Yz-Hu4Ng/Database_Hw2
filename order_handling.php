@@ -23,7 +23,8 @@ if (isset($_POST['order_amount']) && is_numeric($_POST['order_amount']) && $_POS
 		$row = $result->fetch_assoc();
 	    $mask_shop_have=$row['mask_count'];
 		if($order_amount > $mask_shop_have){
-			header("Location: shop_search.php?error=Sorry, we don't have that much masks...");
+			echo "Sorry, we don't have that much masks...";
+			header('Refresh: 2;URL=shop_search.php');
 			exit();
 		}
 		#changed
